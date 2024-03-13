@@ -1,52 +1,32 @@
 agent Lightswitch {
     module Console console;
-    module System system;
+    module System s;
 
     types lights
     {
       formula switch(string);
       formula switch(string, string);
       formula light(string, string);
-      formula linked(string, string);
     }
 
-    initial linked("s1", "l1");
-    initial linked("s1", "l2");
-    initial linked("s2", "l3");
-    initial light("l1", "off");
+    initial light("l1", "on");
     initial light("l2", "off");
-    initial light("l3", "off");
-    initial switch("s1", "off");
-    initial switch("s2", "off");
+    initial switch("s1", "on");
 
     rule +!main(list args) {
-        system.sleep(1000);
-        !switch("s1", "on");
-        system.sleep(1000);
-        !switch("s2", "on");
-        system.sleep(1000);
-        !switch("s2", "off");
-        system.sleep(1000);
-        !switch("s1", "off");
-        system.sleep(1000);
-        !switch("s2", "on");
-        system.sleep(1000);
-        !switch("s2", "off");
-    }
-
-    rule +!light(string Light, string State) : light(Light, string PreviousState) {
-      -light(Light, PreviousState);
-      +light(Light, State);
+        +switch("on");
     }
 
     rule +light(string Light, string State){
       console.println("Light: " + Light + " is in state: " + State);
     }
 
-    rule +!switch(string Switch, string State){
-      foreach(linked(Switch, string Light)){
-        !light(Light, State);
-      }
+    rule +switch(string State){
+      +switch("s1", State);
     }
 
+    rule +switch(string Switch, string State){
+      +light("l1", State);
+      +light("l2", State);
+    }
 }
