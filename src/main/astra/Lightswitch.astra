@@ -9,7 +9,8 @@ agent Lightswitch {
       formula light(string, string);
     }
 
-    initial light("l1", "off");
+    initial light("l1", "on");
+    initial light("l2", "off");
     initial switch("s1", "on");
 
     rule +!main(list args) {
@@ -26,5 +27,6 @@ agent Lightswitch {
 
     rule +switch(string Switch, string State){
       +light("l1", State);
+      +light("l2", State);
     }
 }
