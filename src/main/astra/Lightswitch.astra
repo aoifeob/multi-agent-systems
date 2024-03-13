@@ -1,0 +1,30 @@
+agent Lightswitch {
+    module Console console;
+    module System s;
+
+    types lights
+    {
+      formula switch(string);
+      formula switch(string, string);
+      formula light(string, string);
+    }
+
+    initial light("l1", "off");
+    initial switch("s1", "on");
+
+    rule +!main(list args) {
+        +switch("on");
+    }
+
+    rule +light(string Light, string State){
+      console.println("Light: " + Light + " is in state: " + State);
+    }
+
+    rule +switch(string State){
+      +switch("s1", State);
+    }
+
+    rule +switch(string Switch, string State){
+      +light("l1", State);
+    }
+}

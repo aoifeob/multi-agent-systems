@@ -1,7 +1,0 @@
-agent Hello {
-    module Console console;
-
-    rule +!main(list args) {
-        console.println("Hello, World!");
-    }
-}
