@@ -4,49 +4,59 @@ agent Lightswitch {
 
     types lights
     {
+      formula light_threshold(int);
+      formula light_level(int);
+      formula hour_light(int, int);
+      formula day_simulation(int);
+      formula switch_simulation(int);
       formula switch(string);
       formula switch(string, string);
       formula light(string, string);
-      formula linked(string, string);
     }
 
-    initial linked("s1", "l1");
-    initial linked("s1", "l2");
-    initial linked("s2", "l3");
-    initial light("l1", "off");
-    initial light("l2", "off");
-    initial light("l3", "off");
-    initial switch("s1", "off");
-    initial switch("s2", "off");
+    initial hour_light(0, 1), hour_light(1, 1), hour_light(2, 1), hour_light(3, 1);
+    initial hour_light(4, 1), hour_light(5, 1), hour_light(6, 100), hour_light(7, 250);
+    initial hour_light(8, 400), hour_light(9, 800), hour_light(10, 1000), hour_light(11, 1000);
+    initial hour_light(12, 1000), hour_light(13, 1000), hour_light(14, 1000), hour_light(15, 800);
+    initial hour_light(16, 700), hour_light(17, 600), hour_light(18, 600), hour_light(19, 400);
+    initial hour_light(20, 100), hour_light(21, 100), hour_light(22, 1), hour_light(23, 1);
 
     rule +!main(list args) {
-        system.sleep(1000);
-        !switch("s1", "on");
-        system.sleep(1000);
-        !switch("s2", "on");
-        system.sleep(1000);
-        !switch("s2", "off");
-        system.sleep(1000);
-        !switch("s1", "off");
-        system.sleep(1000);
-        !switch("s2", "on");
-        system.sleep(1000);
-        !switch("s2", "off");
+      !!day_simulation(0);
     }
 
-    rule +!light(string Light, string State) : light(Light, string PreviousState) {
-      -light(Light, PreviousState);
-      +light(Light, State);
+    rule +light_threshold(750) : { }
+
+    rule +hour_light(int Hour, int Lux) {
+
     }
 
-    rule +light(string Light, string State){
-      console.println("Light: " + Light + " is in state: " + State);
+    rule +!day_simulation(24) : { }
+
+    rule +!day_simulation(int Hour) : hour_light(Hour, int Lux) {
+      -+light_level(Lux);
+      system.sleep(1000);
+      !day_simulation(hour+1);
     }
 
-    rule +!switch(string Switch, string State){
-      foreach(linked(Switch, string Light)){
-        !light(Light, State);
-      }
+    rule +!switch_simulation(int Hour) {
+
+    }
+
+    rule +switch(string Switch, "off") {
+      -+light(Switch, "off");
+    }
+
+    rule +switch(string Switch, string State) {
+
+    }
+
+    rule +switch(string Switch) {
+
+    }
+
+    rule +!light(string Switch, string State) {
+
     }
 
 }
