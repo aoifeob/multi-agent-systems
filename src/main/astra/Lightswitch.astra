@@ -10,14 +10,9 @@ agent Lightswitch {
       formula linked(string, string);
     }
 
-    initial linked("s1", "l1");
-    initial linked("s1", "l2");
-    initial linked("s2", "l3");
-    initial light("l1", "off");
-    initial light("l2", "off");
-    initial light("l3", "off");
-    initial switch("s1", "off");
-    initial switch("s2", "off");
+    initial linked("s1", "l1"), linked("s1", "l2"), linked("s2", "l3");
+    initial light("l1", "off"), light("l2", "off"), light("l3", "off");
+    initial switch("s1", "off"), switch("s2", "off");
 
     rule +!main(list args) {
         system.sleep(1000);
