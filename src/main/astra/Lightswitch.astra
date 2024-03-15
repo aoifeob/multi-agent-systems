@@ -49,7 +49,9 @@ agent Lightswitch {
 
     }
 
-    rule +!day_simulation(24) { }
+    rule +!day_simulation(24) {
+      !day_simulation(0);
+    }
 
     rule +!day_simulation(int Hour) : hour_light(Hour, int Lux) {
       -+light_level(Lux);
