@@ -14,6 +14,7 @@ agent Lightswitch {
       formula linked(string, string);
     }
 
+    initial light_threshold(750);
     initial linked("s1", "l1"), linked("s1", "l2"), linked("s2", "l3");
     initial light("l1", "off"), light("l2", "off"), light("l3", "off");
     initial switch("s1", "off"), switch("s2", "off");
@@ -28,15 +29,13 @@ agent Lightswitch {
       !!day_simulation(0);
     }
 
-    rule +light_threshold(750) { }
-
-    rule +light_level(int Lux) {
+    rule +light_level(int Lux) : light_threshold(int Threshold) {
       foreach(switch(string Switch, "on")){
         foreach(linked(Switch, string Light)){
-          if (Lux < 750 & light(Light, "off")){
+          if (Lux < Threshold & light(Light, "off")){
             !light(Light, "on");
           }
-          if (Lux > 750 & light(Light, "on")){
+          if (Lux > Threshold & light(Light, "on")){
             !light(Light, "off");
           }
         }
