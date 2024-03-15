@@ -25,7 +25,9 @@ agent Lightswitch {
       +switch("s1", State);
     }
 
-    rule +switch(string Switch, string State){
+    rule +switch(string Switch, string State) : light(string Light, string OtherState) {
       +light("l1", State);
     }
+
+    rule +switch(string Switch, string State) { }
 }
