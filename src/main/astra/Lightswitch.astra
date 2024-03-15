@@ -28,7 +28,7 @@ agent Lightswitch {
         system.sleep(1000);
         !switch("s2", "off");
         system.sleep(1000);
-        s.exit();
+        system.exit();
     }
 
     rule +!light(string Light, string State) : light(Light, string PreviousState) {
