@@ -15,6 +15,7 @@ agent Lightswitch {
 
     rule +!main(list args) {
         +switch("on");
+        s.exit();
     }
 
     rule +light(string Light, string State){
