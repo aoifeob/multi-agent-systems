@@ -38,8 +38,6 @@ agent Lightswitch {
       +light(Light, State);
     }
 
-    rule +!light(string Light, string State) { }
-
     rule +light(string Light, string State) {
       console.println("Light: " + Light + " is in state: " + State);
     }
