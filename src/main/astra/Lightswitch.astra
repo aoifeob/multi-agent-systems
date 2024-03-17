@@ -21,7 +21,11 @@ agent Lightswitch {
     initial hour_light(0, 1), hour_light(1, 1), hour_light(2, 1), hour_light(3, 1);
     initial hour_light(4, 1), hour_light(5, 1), hour_light(6, 100), hour_light(7, 250);
     initial hour_light(8, 400), hour_light(9, 800), hour_light(10, 1000), hour_light(11, 1000);
-    initial hour_light(12, 1000), hour_light(13, 1000), hour_light(14, 1000), hour_light(15, 800);
+
+    /*NOTE: Lux at 14:00 was changed from 1000 to 600 to demonstrate that when the switch is on,
+      the light will turn on when Lux < Threshold, and will turn off again when Lux > Threshold */
+    initial hour_light(12, 1000), hour_light(13, 1000), hour_light(14, 600), hour_light(15, 800);
+
     initial hour_light(16, 700), hour_light(17, 600), hour_light(18, 600), hour_light(19, 400);
     initial hour_light(20, 100), hour_light(21, 100), hour_light(22, 1), hour_light(23, 1);
 
@@ -32,10 +36,10 @@ agent Lightswitch {
     rule +light_level(int Lux) : light_threshold(int Threshold) {
       foreach(switch(string Switch, "on")){
         foreach(linked(Switch, string Light)){
-          if (Lux < Threshold & light(Light, "off")){
+          if (Lux < Threshold){
             !light(Light, "on");
           }
-          if (Lux > Threshold & light(Light, "on")){
+          if (Lux > Threshold){
             !light(Light, "off");
           }
         }
@@ -55,8 +59,8 @@ agent Lightswitch {
     rule +!day_simulation(int Hour) : hour_light(Hour, int Lux) {
       -+light_level(Lux);
       console.println("Time: " + Hour + " Lux: " + Lux);
-      system.sleep(1000);
       !switch_simulation(Hour);
+      system.sleep(1000);
       !day_simulation(Hour+1);
     }
 
@@ -78,22 +82,23 @@ agent Lightswitch {
 
     rule +!switch_simulation(int Hour) { }
 
-    rule +!switch(string Switch, "off") : switch(Switch, "on") {
-      -switch(Switch, "on");
-      +switch(Switch, "off");
-      foreach(linked(Switch, string Light)){
-        !light(Light, "off");
-      }
-    }
+    rule +!switch(string Switch, string State) : switch(Switch, State) { }
 
     rule +!switch(string Switch, string State) : switch(Switch, string PreviousState) {
-       -switch(Switch, PreviousState);
-       +switch(Switch, State);
+      -switch(Switch, PreviousState);
+      +switch(Switch, State);
     }
 
     rule +switch(string Switch, string State) {
       console.println("Switch: " + Switch + " is in state: " + State);
+      if ("off" == State){
+        foreach(linked(Switch, string Light)){
+          !light(Light, "off");
+        }
+      }
     }
+
+    rule +!light(string Light, string State) : light(Light, State) { }
 
     rule +!light(string Light, string State) : light(Light, string PreviousState) {
       -light(Light,PreviousState);
