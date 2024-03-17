@@ -14,6 +14,7 @@ agent Lightswitch {
 
     rule +!main(list args) {
         +switch("on");
+        s.sleep(1000);
         s.exit();
     }
 
@@ -27,8 +28,11 @@ agent Lightswitch {
       +switch("s1", State);
     }
 
-    rule +switch(string Switch, string State){
+    rule +switch(string Switch, string State): switch(Switch, string OtherState){
+      -light("l1", OtherState);
       +light("l1", State);
     }
+
+    rule +switch(string Switch, string State){ }
 
 }
