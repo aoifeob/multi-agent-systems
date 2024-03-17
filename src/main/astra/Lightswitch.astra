@@ -15,19 +15,31 @@ agent Lightswitch {
 
     rule +!main(list args) {
         +switch("on");
+        s.sleep(1000);
         s.exit();
     }
 
-    rule +light(string Light, string State){
+    rule +light(string Light, string State) : light(Light, string OtherState){
       console.println("Light: " + Light + " is in state: " + State);
     }
+
+    rule +light(string Light, string State){ }
 
     rule +switch(string State){
       +switch("s1", State);
     }
 
-    rule +switch(string Switch, string State){
-      +light("l1", State);
-      +light("l2", State);
+    rule +switch(string Switch, "on"){
+      -light("l1", "off");
+      +light("l1", "on");
+      -light("l2", "off");
+      +light("l2", "on");
+    }
+
+    rule +switch(string Switch, "off"){
+      -light("l1", "on");
+      +light("l1", "off");
+      -light("l2", "on");
+      +light("l2", "off");
     }
 }
