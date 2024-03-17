@@ -31,16 +31,27 @@ agent Lightswitch {
         system.exit();
     }
 
-    rule +!light(string Light, string State) : light(Light, string PreviousState) {
-      -light(Light, PreviousState);
+    rule +!light(string Light, string State) : light(Light, State) { }
+
+    rule +!light(string Light, string State) : light(Light, string OtherState) {
+      -light(Light, OtherState);
       +light(Light, State);
     }
 
-    rule +light(string Light, string State){
+    rule +!light(string Light, string State) { }
+
+    rule +light(string Light, string State) {
       console.println("Light: " + Light + " is in state: " + State);
     }
 
-    rule +!switch(string Switch, string State){
+    rule +!switch(string Switch, string State) : switch(Switch, State) { }
+
+    rule +!switch(string Switch, string State) : switch(Switch, string OtherState) {
+      -switch(Switch, OtherState);
+      +switch(Switch, State);
+    }
+
+    rule +switch(string Switch, string State){
       foreach(linked(Switch, string Light)){
         !light(Light, State);
       }
