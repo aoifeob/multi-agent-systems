@@ -28,11 +28,14 @@ agent Lightswitch {
       +switch("s1", State);
     }
 
-    rule +switch(string Switch, string State): switch(Switch, string OtherState){
-      -light("l1", OtherState);
-      +light("l1", State);
+    rule +switch(string Switch, "on"){
+      -light("l1", "off");
+      +light("l1", "on");
     }
 
-    rule +switch(string Switch, string State){ }
+    rule +switch(string Switch, "off"){
+      -light("l1", "on");
+      +light("l1", "off");
+    }
 
 }
